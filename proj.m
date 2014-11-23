@@ -1,5 +1,8 @@
 clear ; close all; clc
 
+s = RandStream.create('mt19937ar','seed',490);
+RandStream.setGlobalStream(s);
+
 fprintf('Loading and Visualizing Data ...\n')
 load('ex3data1.mat');
 yMat = getYMat(y);
@@ -15,10 +18,6 @@ m = size(X, 1);
 fprintf('Selecting training and testing data set ...\n')
 
 rp = randperm(m);
-xTrain = [];
-yTrain = [];
-xTest = [];
-yTest = [];
 
 xTrain = X(rp(1, 1:(0.8 * m)), :);
 yTrainMat = yMat(rp(1, 1:(0.8 * m)), :);
@@ -32,47 +31,29 @@ yTest = y(rp(1, (0.8 * m)+1: m), :);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fprintf('Running PCA ...\n')
 
-[X_red, eigenVect] = pca(xTrain, 0.01);
+[X_train_red, eigenVect] = pca(xTrain, 0.01);
+fprintf('\nReduced to dimension %d.\n', size(X_train_red, 2) );
+fprintf('\nProgram paused. Press enter to continue.\n');
+%pause;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% Linear Regression %%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fprintf('Training linear regression ...\n')
+%% sample size okay?
 
-lambda = [0:10] / 10;
-lambda = [lambda, [20:20:2000] / 20];
-trainAccu = [];
-testAccu = [];
-
+fprintf('\nPreparing data to plot sample size VS error ...\n')
+%lmPlotSampleSizeVsError(eigenVect, X_train_red, xTest, yTrainMat, yTrain, yTest);
+fprintf('\nProgram paused. Press enter to continue.\n');
+%pause;
 
 %% choose lambda
-for lam = lambda
-    lmTheta = pinv(X_red'*X_red + lam * eye(size(X_red, 2))) * X_red' * yTrainMat;
-    trainPred = lmPredict(xTrain * eigenVect, lmTheta);
-    testPred = lmPredict(xTest * eigenVect, lmTheta);
 
-    %fprintf('\nTraining Set Accuracy: %f\n', mean(double(trainPred == yTrain)) * 100);
-    %fprintf('\nTesting Set Accuracy: %f\n', mean(double(testPred == yTest)) * 100);
-    
-    trainAccu = [trainAccu, mean(double(trainPred == yTrain)) * 100];
-    testAccu = [testAccu, mean(double(testPred == yTest)) * 100];
-end
+fprintf('\nPreparing data to plot lambda VS error ...\n')
+lmTheta = lmPlotLambdaVsError(eigenVect, X_train_red, xTest,yTrainMat,  yTrain, yTest);
 
-lam = 50;
-lmTheta = pinv(X_red'*X_red + lam * eye(size(X_red, 2))) * X_red' * yTrainMat;
-trainPred = lmPredict(xTrain * eigenVect, lmTheta);
-testPred = lmPredict(xTest * eigenVect, lmTheta);
-
-fprintf('\nTraining Set Accuracy: %f\n', mean(double(trainPred == yTrain)) * 100);
-fprintf('\nTesting Set Accuracy: %f\n', mean(double(testPred == yTest)) * 100);
-
-hold on;
-plot(lambda, trainAccu, '--go', lambda, testAccu, ':r*');
-legend('green = train','red = test')
-%plot(lambda, testAccu)
+fprintf('\nProgram paused. Press enter to continue.\n');
 pause;
-hold off;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% Show Predictions %%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,8 +65,7 @@ for i = 1:size(rp, 2)
     displayData(xTest(rp(i), :));
 
     pred = lmPredict(xTest(rp(i),:) * eigenVect, lmTheta);
-    pred
-    fprintf('\nNeural Linear Regression Prediction: %d (digit %d)\n', mod(pred, 10) , mod(yTest(rp(i)), 10));
+    fprintf('\nLinear Regression Prediction: %d (digit %d)\n', mod(pred, 10) , mod(yTest(rp(i)), 10));
     
     % Pause
     fprintf('Program paused. Press enter to continue.\n');

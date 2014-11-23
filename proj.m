@@ -45,6 +45,8 @@ lambda = [lambda, [20:20:2000] / 20];
 trainAccu = [];
 testAccu = [];
 
+
+%% choose lambda
 for lam = lambda
     lmTheta = pinv(X_red'*X_red + lam * eye(size(X_red, 2))) * X_red' * yTrainMat;
     trainPred = lmPredict(xTrain * eigenVect, lmTheta);
@@ -55,7 +57,6 @@ for lam = lambda
     
     trainAccu = [trainAccu, mean(double(trainPred == yTrain)) * 100];
     testAccu = [testAccu, mean(double(testPred == yTest)) * 100];
-    
 end
 
 lam = 50;

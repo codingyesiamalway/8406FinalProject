@@ -1,5 +1,8 @@
 function lmPlotSampleSizeVsError(eigenVect, X_train_red, xTest, yTrainMat, yTrain, yTest)
 
+	X_train_red = XwithOne(X_train_red);
+	xTest_red = XwithOne(xTest * eigenVect);
+
     sampleVec = [1:200:size(X_train_red, 1)];
     sampleTrainAccu = sampleVec;
     sampleTestAccu = sampleVec;
@@ -13,7 +16,7 @@ function lmPlotSampleSizeVsError(eigenVect, X_train_red, xTest, yTrainMat, yTrai
         lmTheta = pinv(sampleTrainX'*sampleTrainX) * sampleTrainX' * sampleTrainYMat;
 
         trainPred = lmPredict(sampleTrainX, lmTheta);
-        testPred = lmPredict(xTest * eigenVect, lmTheta);
+        testPred = lmPredict(xTest_red, lmTheta);
 
         sampleTrainAccu(j) = 100 - mean(double(trainPred == sampleTrainY)) * 100;
         sampleTestAccu(j) = 100 - mean(double(testPred == yTest)) * 100;

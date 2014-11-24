@@ -1,5 +1,6 @@
 function num = lmPredict(X, theta)
 
+	%X = XwithOne(X);
     num = zeros(size(X, 1), 1);
     preds = X * theta;
     

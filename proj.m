@@ -50,10 +50,23 @@ fprintf('\nProgram paused. Press enter to continue.\n');
 %% choose lambda
 
 fprintf('\nPreparing data to plot lambda VS error ...\n')
-lmTheta = lmPlotLambdaVsError(eigenVect, X_train_red, xTest,yTrainMat,  yTrain, yTest);
+%lmTheta = lmPlotLambdaVsError(eigenVect, X_train_red, xTest,yTrainMat,  yTrain, yTest);
 
-fprintf('\nProgram paused. Press enter to continue.\n');
+%fprintf('\nProgram paused. Press enter to continue.\n');
 pause;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% Logistic Regression %%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+lrTheta = glmfit(X_train_red, yTrainMat, 'binomial', 'link', 'logit');
+
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% Show Predictions %%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
